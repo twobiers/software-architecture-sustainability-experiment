@@ -4,39 +4,39 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.twobiers.sustainability.core.data.ListingRepository;
-import com.github.twobiers.sustainability.core.model.Listing;
-import com.github.twobiers.sustainability.core.service.ListingService;
+import com.github.twobiers.sustainability.core.data.DocumentRepository;
+import com.github.twobiers.sustainability.core.service.DocumentService;
 import java.util.Optional;
+import org.bson.Document;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPool;
 
 @Component
-public class CaffeineRedisCachedListingService implements ListingService {
-  private static final Cache<String, Optional<Listing>> LISTING_CACHE = Caffeine
+public class CaffeineRedisCachedDocumentService implements DocumentService {
+  private static final Cache<String, Optional<Document>> DOCUMENT_CACHE = Caffeine
       .newBuilder()
       .build();
-  private final ListingRepository listingRepository;
+  private final DocumentRepository listingRepository;
   private final ObjectMapper objectMapper;
   private final JedisPool jedisPool;
 
-  public CaffeineRedisCachedListingService(ListingRepository listingRepository,
+  public CaffeineRedisCachedDocumentService(DocumentRepository documentRepository,
       ObjectMapper objectMapper, JedisPool jedisPool) {
-    this.listingRepository = listingRepository;
+    this.listingRepository = documentRepository;
     this.objectMapper = objectMapper;
     this.jedisPool = jedisPool;
   }
 
   @Override
-  public Optional<Listing> findById(String id) {
-    return LISTING_CACHE.get(id, this::getFromRedis);
+  public Optional<Document> findById(String id) {
+    return DOCUMENT_CACHE.get(id, this::getFromRedis);
   }
 
-  private Optional<Listing> getFromRedis(String id) {
+  private Optional<Document> getFromRedis(String id) {
     try (var jedis = jedisPool.getResource()) {
       var value = jedis.get(id);
       if (value != null) {
-        return Optional.of(objectMapper.readValue(value, Listing.class));
+        return Optional.of(objectMapper.readValue(value, Document.class));
       }
 
       var result = listingRepository.findById(id);

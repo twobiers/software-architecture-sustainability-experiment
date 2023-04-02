@@ -1,24 +1,21 @@
 package com.github.twobiers.sustainability.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.twobiers.sustainability.core.data.ListingRepository;
-import com.github.twobiers.sustainability.core.model.Listing;
-import com.github.twobiers.sustainability.core.service.ListingService;
+import com.github.twobiers.sustainability.core.data.DocumentRepository;
+import com.github.twobiers.sustainability.core.service.DocumentService;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.bson.Document;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPool;
 
 @Component
-public class RedisCachedListingService implements ListingService {
-  private final ListingRepository listingRepository;
+public class RedisCachedDocumentService implements DocumentService {
+  private final DocumentRepository listingRepository;
   private final JedisPool jedisPool;
   private final ObjectMapper objectMapper;
 
-  public RedisCachedListingService(ListingRepository listingRepository, JedisPool jedisPool,
+  public RedisCachedDocumentService(DocumentRepository listingRepository, JedisPool jedisPool,
       ObjectMapper objectMapper) {
     this.listingRepository = listingRepository;
     this.jedisPool = jedisPool;
@@ -26,11 +23,11 @@ public class RedisCachedListingService implements ListingService {
   }
 
   @Override
-  public Optional<Listing> findById(String id) {
+  public Optional<Document> findById(String id) {
     try (var jedis = jedisPool.getResource()) {
       var value = jedis.get(id);
       if (value != null) {
-        return Optional.of(objectMapper.readValue(value, Listing.class));
+        return Optional.of(objectMapper.readValue(value, Document.class));
       }
 
       var result = listingRepository.findById(id);
