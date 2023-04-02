@@ -6,6 +6,6 @@ iterations: 5
 plan:
   - name: Fetch Listings from CSV {{ index }}
     request:
-      url: /listings/{{ item.id }}
+      url: /documents/{{ item.id }}
     with_items_from_csv: ./fixtures/listings.csv
     shuffle: false

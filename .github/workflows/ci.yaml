@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  JAVA_VERSION: 17
+
+jobs:
+  validation:
+    name: Gradle wrapper validation
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+  assemble:
+    name: Build
+
+    runs-on: ubuntu-latest
+    needs: [ validation ]
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+          cache: 'gradle'
+
+      - name: Gradle Assemble
+        run: |
+          ./gradlew --stacktrace assemble --no-daemon
+
+  test:
+
+    runs-on: ubuntu-latest
+    needs: [ validation ]
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+          cache: 'gradle'
+
+      - name: Gradle test
+        run: |
+          ./gradlew --stacktrace test --no-daemon
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results
+          path: build/test-results
+
+      - name: Upload Build Report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: build-reports
+          path: build/reports
+
+  build-image:
+    name: Build Docker Images
+
+    runs-on: ubuntu-latest
+    needs: [ assemble, test ]
+
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+          cache: 'gradle'
+
+      - name: Login to Quay
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Rolling Docker Image
+        run: ./gradlew jibAll --no-daemon -x test

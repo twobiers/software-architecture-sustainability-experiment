@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class DocumentRepositoryImpl implements DocumentRepository {
   private final MongoClient mongoClient;
-  private final String databaseName = "airbnb";
-  private final String collectionName = "listingsAndReviews";
+  private final String databaseName = "off";
+  private final String collectionName = "products";
 
   public DocumentRepositoryImpl(MongoClient mongoClient) {
     this.mongoClient = mongoClient;
