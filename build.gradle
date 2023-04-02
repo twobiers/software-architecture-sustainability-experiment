@@ -43,5 +43,9 @@ configure(subprojects.findAll {it.name != 'core'}) {
 }
 
 tasks.create("jibAll") {
-    dependsOn subprojects.findAll {it.name != 'core'}.collect { it.tasks.jib }
+    dependsOn subprojects.findAll {it.name != 'core' }.collect { it.tasks.jib }
+}
+
+tasks.create("jibDockerBuildAll") {
+    dependsOn subprojects.findAll {it.name != 'core' }.collect { it.tasks.jibDockerBuild }
 }
