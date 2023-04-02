@@ -36,8 +36,15 @@ subprojects {
 configure(subprojects.findAll {it.name != 'core'}) {
     apply plugin: 'com.google.cloud.tools.jib'
     jib {
+        from {
+            image = "eclipse-temurin:17-jdk-alpine"
+        }
         to {
             image = "ghcr.io/twobiers/software-architecture-sustainability-experiment:${rootProject.version}-${project.name}"
+        }
+        container {
+            format = "OCI"
+            creationTime = "USE_CURRENT_TIMESTAMP"
         }
     }
 }
