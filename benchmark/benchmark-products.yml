@@ -1,6 +1,6 @@
 ---
 concurrency: 4
-base: 'http://localhost:8080'
+base: 'http://192.168.178.64:8080'
 iterations: 5
 
 plan:

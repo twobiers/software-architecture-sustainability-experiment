@@ -1,7 +1,7 @@
 ---
-concurrency: 4
-base: 'http://localhost:8080'
-iterations: 5
+concurrency: 50
+base: 'http://192.168.178.64:8080'
+iterations: 200
 
 plan:
   - name: Fetch Listings from CSV {{ index }}
