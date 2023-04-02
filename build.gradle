@@ -47,6 +47,16 @@ configure(subprojects.findAll {it.name != 'core'}) {
             creationTime = "USE_CURRENT_TIMESTAMP"
         }
     }
+
+    sourceSets {
+        main {
+            resources {
+                srcDirs += [
+                        project(':core').sourceSets.main.resources
+                ]
+            }
+        }
+    }
 }
 
 tasks.create("jibAll") {

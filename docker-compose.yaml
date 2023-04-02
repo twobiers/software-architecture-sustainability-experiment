@@ -11,6 +11,15 @@ services:
     restart: always
     ports:
       - 6379:6379
+  service:
+    image: "ghcr.io/twobiers/software-architecture-sustainability-experiment:0.1-${VARIANT:-no-cache}"
+    container_name: service
+    restart: always
+    environment:
+      - REDIS_HOST=redis
+      - MONGO_HOST=mongo
+    ports:
+      - 8080:8080
   nginx:
     image: nginx:1.23-alpine
     container_name: nginx
