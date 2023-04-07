@@ -82,6 +82,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ assemble, test ]
 
+    permissions:
+      contents: read
+      packages: write
+
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
 
     steps:
