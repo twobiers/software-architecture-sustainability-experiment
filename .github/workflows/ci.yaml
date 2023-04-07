@@ -103,4 +103,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Rolling Docker Image
-        run: ./gradlew jibAll --no-daemon -x test -Djib.serialize=true --stacktrace --debug
+        run: ./gradlew jibAll --no-daemon -x test -Djib.serialize=true --stacktrace --console=plain
