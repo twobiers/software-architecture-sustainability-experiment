@@ -18,6 +18,8 @@ services:
     environment:
       - REDIS_HOST=redis
       - MONGO_HOST=mongo
+      - MONGO_DATABASE=off
+      - MONGO_COLLECTION=products
   nginx:
     image: nginx:1.23-alpine
     container_name: nginx
