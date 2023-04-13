@@ -3,6 +3,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     command:
+      - '--web.enable-admin-api'
       - '--storage.tsdb.retention.time=90d'
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
