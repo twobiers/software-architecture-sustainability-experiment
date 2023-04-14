@@ -6,6 +6,8 @@ services:
     # entrypoint: ["/bin/prometheus-init.sh"]
     command:
       - '--web.enable-admin-api'
+      - '--web.enable-remote-write-receiver'
+      - '--enable-feature=native-histograms'
       - '--storage.tsdb.retention.time=90d'
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
