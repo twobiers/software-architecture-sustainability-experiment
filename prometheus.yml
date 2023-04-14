@@ -11,10 +11,11 @@ scrape_configs:
     - targets: [ ] # TODO: Add DUT adress here
   - job_name: 'snmp'
     static_configs:
-      - targets: [ ]  # TODO: Add PDU network address as target
+      - targets: 
+        - "pdu.local" # GUDE Systems Expert Power Control 1202-1
     metrics_path: /snmp
     params:
-      module: [if_mib] # TODO: Not sure what this does
+      module: [gudeads_mib]
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
