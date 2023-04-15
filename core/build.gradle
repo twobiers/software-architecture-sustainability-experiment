@@ -12,7 +12,8 @@ jar {
 
 dependencies {
     api 'org.springframework.boot:spring-boot-starter-web'
-    api 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    api 'org.postgresql:postgresql'
 
     testImplementation 'org.instancio:instancio-junit:2.12.1'
 }

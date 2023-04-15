@@ -2,6 +2,6 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 
 export default function () {
-  http.get('http://localhost:8080/documents/3017620420009');
+  http.get('http://localhost:8080/tickets/0005433002590');
   sleep(1);
 }
