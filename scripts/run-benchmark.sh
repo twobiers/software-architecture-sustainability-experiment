@@ -5,6 +5,7 @@ DURATION=30s
 BENCHMARK_SCRIPT="benchmark/get_single_product.js"
 VARIANT="no-cache"
 RESULTS_DIR="results"
+export PRODUCTS_FILE="product_ids_10k.json"
 
 current_date() {
     date +"%Y-%m-%d_%H-%M-%S"

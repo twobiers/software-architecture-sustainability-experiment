@@ -4,7 +4,8 @@ import exec from 'k6/execution';
 import { SharedArray } from 'k6/data';
 
 const data = new SharedArray('products', function () {
-  const ids = JSON.parse(open('./product_ids.json'));
+  const productsFile = __ENV.PRODUCTS_FILE || './product_ids_1k.json';
+  const ids = JSON.parse(open(productsFile));
   return ids;
 });
 
