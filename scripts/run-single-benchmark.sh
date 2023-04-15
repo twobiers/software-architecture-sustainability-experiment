@@ -27,13 +27,13 @@ setup_dut() {
         excluded_services="redis"
     fi
 
-    ssh -o StrictHostKeyChecking=no root@$DUT_IP "cd $DUT_EXPERIMENT_LOCATION && docker-compose down && VARIANT=${VARIANT} docker-compose up -d $(docker compose config --services | grep -v "$excluded_services")"
+    ssh -o StrictHostKeyChecking=no tobi@$DUT_IP "cd $DUT_EXPERIMENT_LOCATION && docker-compose down && VARIANT=${VARIANT} docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
 }
 
 cleanup_dut() {
     echo "[$(current_date)] Cleaning up DUT"
 
-    ssh -o StrictHostKeyChecking=no root@$DUT_IP "cd $DUT_EXPERIMENT_LOCATION && docker-compose down"
+    ssh -o StrictHostKeyChecking=no tobi@$DUT_IP "cd $DUT_EXPERIMENT_LOCATION && docker-compose down"
 }
 
 run_benchmark() {
