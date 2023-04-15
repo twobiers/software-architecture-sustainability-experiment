@@ -10,6 +10,5 @@ const data = new SharedArray('products', function () {
 
 export default function () {
   const id = data[Math.floor(Math.random() * data.length)];
-  http.get(`http://localhost:8080/documents/${id}`);
-  sleep(1);
+  http.get(`http://${__ENV.SERVICE_HOST || 'localhost:8080'}/documents/${id}`);
 }

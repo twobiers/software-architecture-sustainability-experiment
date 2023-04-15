@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-VUS=50
+VUS=200
 DURATION=30s
-BENCHMARK_SCRIPT="benchmark/get_single_product.js"
+BENCHMARK_SCRIPT="benchmark/get_iterative_product_from_id_list.js"
 VARIANT="no-cache"
 RESULTS_DIR="results"
-export PRODUCTS_FILE="product_ids_10k.json"
+export PRODUCTS_FILE="product_ids_1k.json"
+export SERVICE_HOST="192.168.178.80:8080"
 
 current_date() {
     # date +"%Y-%m-%d_%H-%M-%S"
@@ -37,7 +38,7 @@ ENERGY_USAGE=$(snmpget -Oqv -v1 -c private 192.168.178.78 1.3.6.1.4.1.28507.43.1
 END_INSTANT=$(current_date)
 echo "[$END_INSTANT] Benchmark Ended"
 
-if [ ! -f "$RESULTS_DIR/benchmark-log.txt" ]; then
+if [ ! -f "$RESULTS_DIR/benchmark-log.csv" ]; then
     echo "Start, End, VUS, Duration, Variant, Script, Energy" >$RESULTS_DIR/benchmark-log.csv
 fi
 echo "$START_INSTANT, $END_INSTANT, $VUS, $DURATION, $VARIANT, $BENCHMARK_SCRIPT, $ENERGY_USAGE" >>$RESULTS_DIR/benchmark-log.csv
