@@ -16,6 +16,9 @@ current_date() {
 START_INSTANT=$(current_date)
 echo "[$START_INSTANT] Starting Benchmark"
 
+# Reset energy counter
+snmpset -v1 -c private 192.168.178.78 1.3.6.1.4.1.28507.43.1.5.1.2.1.13.1 u 0
+
 k6 run \
     -o experimental-prometheus-rw \
     -o "csv=$RESULTS_DIR/$VARIANT/$START_INSTANT.csv" \
@@ -24,7 +27,13 @@ k6 run \
     --duration $DURATION \
     $BENCHMARK_SCRIPT
 
+# Get energy consumption
+# Note that this is measured in Wh, and we probably don't get any meaningful value here as
+# the test is rather short.
+# We probably need to compare the active power values or increase the duration of the test.
+ENERGY_USAGE=$(snmpget -Oqv -v1 -c private 192.168.178.78 1.3.6.1.4.1.28507.43.1.5.1.2.1.13.1)
+
 END_INSTANT=$(current_date)
 echo "[$END_INSTANT] Benchmark Ended"
 
-echo "Start: $START_INSTANT, END: $END_INSTANT, VUS: $VUS, DURATION: $DURATION, VARIANT: $VARIANT, SCRIPT: $BENCHMARK_SCRIPT" >>$RESULTS_DIR/benchmark-log.txt
+echo "Start: $START_INSTANT, END: $END_INSTANT, VUS: $VUS, DURATION: $DURATION, VARIANT: $VARIANT, SCRIPT: $BENCHMARK_SCRIPT, ENERGY: $ENERGY_USAGE" >>$RESULTS_DIR/benchmark-log.txt
