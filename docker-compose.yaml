@@ -2,19 +2,19 @@ services:
   mongo:
     image: mongo:6.0
     container_name: mongo
-    restart: always
+    restart: unless-stopped
     ports:
       - 27017:27017
   redis:
     image: redis:7.0-alpine
     container_name: redis
-    restart: always
+    restart: unless-stopped
     ports:
       - 6379:6379
   service:
     image: "ghcr.io/twobiers/software-architecture-sustainability-experiment:0.1-${VARIANT:-no-cache}"
     container_name: service
-    restart: always
+    restart: unless-stopped
     environment:
       - REDIS_HOST=redis
       - MONGO_HOST=mongo
@@ -23,7 +23,7 @@ services:
   nginx:
     image: nginx:1.23-alpine
     container_name: nginx
-    restart: always
+    restart: unless-stopped
     depends_on:
       - service
     ports:
