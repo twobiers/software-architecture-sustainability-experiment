@@ -15,22 +15,22 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - ./scripts/prometheus-init.sh:/bin/prometheus-init.sh
-  grafana:
-    image: grafana/grafana-oss:latest
-    container_name: grafana
-    ports:
-      - 3000:3000
-    environment:      
-      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
-      GF_AUTH_ANONYMOUS_ENABLED: 'true'
-      GF_AUTH_BASIC_ENABLED: 'false'
-      GF_DASHBOARDS_MIN_REFRESH_INTERVAL: 1s
-      GF_RENDERING_SERVER_URL: http://renderer:8081/render
-      GF_RENDERING_CALLBACK_URL: http://grafana:3000/
-  renderer:
-    image: grafana/grafana-image-renderer:latest
-    environment:
-      ENABLE_METRICS: 'true'
+  # grafana:
+  #   image: grafana/grafana-oss:latest
+  #   container_name: grafana
+  #   ports:
+  #     - 3000:3000
+  #   environment:      
+  #     GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+  #     GF_AUTH_ANONYMOUS_ENABLED: 'true'
+  #     GF_AUTH_BASIC_ENABLED: 'false'
+  #     GF_DASHBOARDS_MIN_REFRESH_INTERVAL: 1s
+  #     GF_RENDERING_SERVER_URL: http://renderer:8081/render
+  #     GF_RENDERING_CALLBACK_URL: http://grafana:3000/
+  # renderer:
+  #   image: grafana/grafana-image-renderer:latest
+  #   environment:
+  #     ENABLE_METRICS: 'true'
   snmp-exporter:
     image: prom/snmp-exporter:latest
     container_name: snmp_exporter
