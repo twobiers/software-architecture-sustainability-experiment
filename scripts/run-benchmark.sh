@@ -2,7 +2,7 @@
 
 VUS=50
 DURATION=30s
-BENCHMARK_SCRIPT="benchmark/get_single_ticket.js"
+BENCHMARK_SCRIPT="benchmark/get_single_product.js"
 VARIANT="no-cache"
 RESULTS_DIR="results"
 

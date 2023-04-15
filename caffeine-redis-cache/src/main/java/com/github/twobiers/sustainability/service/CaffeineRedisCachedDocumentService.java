@@ -4,42 +4,42 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.twobiers.sustainability.core.data.TicketRepository;
-import com.github.twobiers.sustainability.core.service.TicketService;
+import com.github.twobiers.sustainability.core.data.DocumentRepository;
+import com.github.twobiers.sustainability.core.service.DocumentService;
 import java.util.Optional;
-import com.github.twobiers.sustainability.core.model.Ticket;
+import org.bson.Document;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPool;
 
 @Component
-public class CaffeineRedisCachedTicketService implements TicketService {
-  private static final Cache<String, Optional<Ticket>> DOCUMENT_CACHE = Caffeine
+public class CaffeineRedisCachedDocumentService implements DocumentService {
+  private static final Cache<String, Optional<Document>> DOCUMENT_CACHE = Caffeine
       .newBuilder()
       .build();
-  private final TicketRepository ticketRepository;
+  private final DocumentRepository listingRepository;
   private final ObjectMapper objectMapper;
   private final JedisPool jedisPool;
 
-  public CaffeineRedisCachedTicketService(TicketRepository ticketRepository,
+  public CaffeineRedisCachedDocumentService(DocumentRepository documentRepository,
       ObjectMapper objectMapper, JedisPool jedisPool) {
-    this.ticketRepository = ticketRepository;
+    this.listingRepository = documentRepository;
     this.objectMapper = objectMapper;
     this.jedisPool = jedisPool;
   }
 
   @Override
-  public Optional<Ticket> findById(String id) {
+  public Optional<Document> findById(String id) {
     return DOCUMENT_CACHE.get(id, this::getFromRedis);
   }
 
-  private Optional<Ticket> getFromRedis(String id) {
+  private Optional<Document> getFromRedis(String id) {
     try (var jedis = jedisPool.getResource()) {
       var value = jedis.get(id);
       if (value != null) {
-        return Optional.of(objectMapper.readValue(value, Ticket.class));
+        return Optional.of(objectMapper.readValue(value, Document.class));
       }
 
-      var result = ticketRepository.findById(id);
+      var result = listingRepository.findById(id);
       if (result.isPresent()) {
         jedis.set(id, objectMapper.writeValueAsString(result.get()));
       }

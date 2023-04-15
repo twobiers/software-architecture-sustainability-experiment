@@ -5,16 +5,6 @@ services:
     restart: always
     ports:
       - 27017:27017
-  postgres:
-    image: postgres:15.0-alpine
-    container_name: postgres-db
-    restart: always
-    ports:
-      - 5432:5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
   redis:
     image: redis:7.0-alpine
     container_name: redis
@@ -30,11 +20,6 @@ services:
       - MONGO_HOST=mongo
       - MONGO_DATABASE=off
       - MONGO_COLLECTION=products
-      - POSTGRES_HOST=postgres-db
-      - POSTGRES_DATABASE=demo
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_SCHEMA=demo
   nginx:
     image: nginx:1.23-alpine
     container_name: nginx
