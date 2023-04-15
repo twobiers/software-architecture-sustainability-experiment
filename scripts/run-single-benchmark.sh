@@ -40,6 +40,10 @@ run_benchmark() {
     START_INSTANT=$(current_date)
     echo "[$START_INSTANT] Starting Benchmark"
 
+    # We sleep here, because we're scraping metrics from the DUT and we want to make sure that
+    # we get metrics from within the interval of the benchmark. 1s is the configured scrape interval
+    sleep 1s
+
     # Reset energy counter
     snmpset -v1 -c private 192.168.178.78 1.3.6.1.4.1.28507.43.1.5.1.2.1.13.1 u 0
 
@@ -56,6 +60,10 @@ run_benchmark() {
     # the test is rather short.
     # We probably need to compare the active power values or increase the duration of the test.
     ENERGY_USAGE=$(snmpget -Oqv -v1 -c private 192.168.178.78 1.3.6.1.4.1.28507.43.1.5.1.2.1.13.1)
+
+    # We sleep here, because we're scraping metrics from the DUT and we want to make sure that
+    # we get metrics from within the interval of the benchmark. 1s is the configured scrape interval
+    sleep 1s
 
     END_INSTANT=$(current_date)
     echo "[$END_INSTANT] Benchmark Ended"
