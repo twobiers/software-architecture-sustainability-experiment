@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-DUT_IP="192.168.178.80"
-DUT_EXPERIMENT_LOCATION="/home/experiment/software-architecture-sustainability-experiment"
+DUT_IP="192.168.178.79"
+DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experiment"
 VUS=200
 DURATION=30s
 BENCHMARK_SCRIPT="benchmark/get_iterative_product_from_id_list.js"
@@ -10,7 +10,7 @@ RESULTS_DIR="results"
 SLEEP_TIME=10s
 
 export PRODUCTS_FILE="product_ids_1k.json"
-export SERVICE_HOST="192.168.178.80:8080"
+export SERVICE_HOST="$DUT_IP:8080"
 
 current_date() {
     # date +"%Y-%m-%d_%H-%M-%S"
