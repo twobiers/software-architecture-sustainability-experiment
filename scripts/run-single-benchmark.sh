@@ -75,13 +75,13 @@ prepare_results_directory() {
     [ ! -d "$RESULTS_DIR/$VARIANT" ] && mkdir -p "$RESULTS_DIR/$VARIANT"
 
     if [ ! -f "$RESULTS_DIR/benchmark-log.csv" ]; then
-        echo "Start, End, VUS, Duration, Variant, Script, Products, Energy" >$RESULTS_DIR/benchmark-log.csv
+        echo "Start,End,VUS,Duration,Variant,Script,Products,Energy" >$RESULTS_DIR/benchmark-log.csv
     fi
 
 }
 
 log_results() {
-    echo "$START_INSTANT, $END_INSTANT, $VUS, $DURATION, $VARIANT, $BENCHMARK_SCRIPT, $PRODUCTS_FILE, $ENERGY_USAGE" >>$RESULTS_DIR/benchmark-log.csv
+    echo "$START_INSTANT,$END_INSTANT,$VUS,$DURATION,$VARIANT,$BENCHMARK_SCRIPT,$PRODUCTS_FILE,$ENERGY_USAGE" >>$RESULTS_DIR/benchmark-log.csv
 }
 
 prepare_results_directory

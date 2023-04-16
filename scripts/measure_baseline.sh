@@ -21,7 +21,7 @@ END_INSTANT=$(current_date)
 ENERGY_USAGE=$(snmpget -Oqv -v1 -c private 192.168.178.78 1.3.6.1.4.1.28507.43.1.5.1.2.1.13.1)
 
 if [ ! -f "$RESULTS_DIR/baseline.csv" ]; then
-    echo "Start, End, Duration, Energy" >$RESULTS_DIR/baseline.csv
+    echo "Start,End,Duration,Energy" >$RESULTS_DIR/baseline.csv
 fi
 
-echo "$START_INSTANT, $END_INSTANT, $DURATION, $ENERGY_USAGE" >>$RESULTS_DIR/baseline.csv
+echo "$START_INSTANT,$END_INSTANT,$DURATION,$ENERGY_USAGE" >>$RESULTS_DIR/baseline.csv
