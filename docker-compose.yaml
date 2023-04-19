@@ -17,6 +17,8 @@ services:
     image: "ghcr.io/twobiers/software-architecture-sustainability-experiment:0.1-${VARIANT:-no-cache}"
     container_name: service
     restart: unless-stopped
+    ports:
+      - 8081:8080
     environment:
       - REDIS_HOST=redis
       - MONGO_HOST=mongo
