@@ -21,7 +21,7 @@ current_date() {
 
 setup_dut() {
     echo "[$(current_date)] Resetting DUT"
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose down"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose stop"
 
     echo "[$(current_date)] Rebooting DUT"
 
@@ -50,7 +50,7 @@ setup_dut() {
 cleanup_dut() {
     echo "[$(current_date)] Cleaning up DUT"
 
-    ssh "$SSH_PARAMETER" $SSH_HOST_DUT "cd $DUT_EXPERIMENT_LOCATION && docker-compose down"
+    ssh "$SSH_PARAMETER" $SSH_HOST_DUT "cd $DUT_EXPERIMENT_LOCATION && docker-compose stop"
 }
 
 run_benchmark() {
