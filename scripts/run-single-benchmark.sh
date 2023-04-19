@@ -20,9 +20,12 @@ current_date() {
 }
 
 setup_dut() {
+    echo "[$(current_date)] Resetting DUT"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose down"
+
     echo "[$(current_date)] Rebooting DUT"
 
-    ssh "$SSH_PARAMETER" $SSH_HOST_DUT "reboot"
+    ssh "$SSH_PARAMETER" $SSH_HOST_DUT "sudo reboot"
 
     echo "[$(current_date)] Waiting for DUT to come back online"
     sh ./scripts/waitforssh.sh $SSH_HOST_DUT
@@ -32,7 +35,7 @@ setup_dut() {
         exit 1
     fi
 
-    echo "[$(current_date)] Preparing DUT"
+    echo "[$(current_date)] Starting Services on DUT"
 
     #Hacky way to get all services except the one we want to exclude
     excluded_services="XXXXXXXXXXXXXXXXXXXXXXX"
@@ -41,7 +44,7 @@ setup_dut() {
         excluded_services="redis"
     fi
 
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose down && VARIANT=${VARIANT} docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && VARIANT=${VARIANT} docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
 }
 
 cleanup_dut() {
@@ -67,6 +70,7 @@ run_benchmark() {
         -o "json=$RESULTS_DIR/$VARIANT/${START_INSTANT}_k6.json" \
         --vus $VUS \
         --duration $DURATION \
+        --quiet \
         $BENCHMARK_SCRIPT
 
     # Get energy consumption
