@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
 DUT_IP="192.168.178.79"
+SSH_HOST_DUT="tobi@$DUT_IP"
+SSH_PARAMETER="-o StrictHostKeyChecking=no"
 DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experiment"
 VUS=200
-DURATION=30s
+DURATION=3m
 BENCHMARK_SCRIPT="benchmark/get_iterative_product_from_id_list.js"
 VARIANT="${VARIANT:-no-cache}"
 RESULTS_DIR="results"
@@ -18,6 +20,18 @@ current_date() {
 }
 
 setup_dut() {
+    echo "[$(current_date)] Rebooting DUT"
+
+    ssh "$SSH_PARAMETER" $SSH_HOST_DUT "reboot"
+
+    echo "[$(current_date)] Waiting for DUT to come back online"
+    sh ./scripts/waitforssh.sh $SSH_HOST_DUT
+    RESULT=$?
+    if [ ! $RESULT -eq 0 ]; then
+        echo "[$(current_date)] DUT did not come back online"
+        exit 1
+    fi
+
     echo "[$(current_date)] Preparing DUT"
 
     #Hacky way to get all services except the one we want to exclude
@@ -27,13 +41,13 @@ setup_dut() {
         excluded_services="redis"
     fi
 
-    ssh -o StrictHostKeyChecking=no tobi@$DUT_IP "cd $DUT_EXPERIMENT_LOCATION && docker-compose down && VARIANT=${VARIANT} docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose down && VARIANT=${VARIANT} docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
 }
 
 cleanup_dut() {
     echo "[$(current_date)] Cleaning up DUT"
 
-    ssh -o StrictHostKeyChecking=no tobi@$DUT_IP "cd $DUT_EXPERIMENT_LOCATION && docker-compose down"
+    ssh "$SSH_PARAMETER" $SSH_HOST_DUT "cd $DUT_EXPERIMENT_LOCATION && docker-compose down"
 }
 
 run_benchmark() {

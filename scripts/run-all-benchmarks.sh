@@ -13,6 +13,11 @@ for v in "${VARIANTS[@]}"; do
     for i in $(seq 1 $ITERATIONS); do
         echo "[$(current_date)] Iteration $i"
         export VARIANT=$v
-        ./scripts/run-single-benchmark.sh
+        sh ./scripts/run-single-benchmark.sh
+
+        RESULT=$?
+        if [ ! $RESULT -eq 0 ]; then
+            echo "[$(current_date)] Benchmark failed"
+        fi
     done
 done
