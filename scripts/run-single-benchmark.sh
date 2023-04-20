@@ -4,8 +4,12 @@ DUT_IP="192.168.178.79"
 SSH_HOST_DUT="tobi@$DUT_IP"
 SSH_PARAMETER="-o StrictHostKeyChecking=no"
 DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experiment"
+RAMP_UP_VUS=0
+RAMP_DOWN_VUS=0
 VUS=200
-DURATION=3m
+RAMP_UP_DURATION=10s
+RAMP_DOWN_DURATION=10s
+DURATION=90s
 BENCHMARK_SCRIPT="benchmark/get_iterative_product_from_id_list.js"
 VARIANT="${VARIANT:-no-cache}"
 RESULTS_DIR="results"
@@ -66,10 +70,8 @@ run_benchmark() {
 
     k6 run \
         -o experimental-prometheus-rw \
-        -o "csv=$RESULTS_DIR/$VARIANT/${START_INSTANT}_k6.csv" \
-        -o "json=$RESULTS_DIR/$VARIANT/${START_INSTANT}_k6.json" \
-        --vus $VUS \
-        --duration $DURATION \
+        --summary-export "$RESULTS_DIR/$VARIANT/${START_INSTANT}_k6.json" \
+        -u $RAMP_UP_VUS -s $RAMP_UP_DURATION:$VUS -s $DURATION -s $RAMP_DOWN_DURATION:$RAMP_DOWN_VUS \
         --quiet \
         $BENCHMARK_SCRIPT
 
