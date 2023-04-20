@@ -44,7 +44,7 @@ setup_dut() {
         excluded_services="redis"
     fi
 
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && VARIANT=${VARIANT} docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && export VARIANT=${VARIANT} && docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
 }
 
 cleanup_dut() {

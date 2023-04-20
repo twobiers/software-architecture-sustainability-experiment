@@ -8,10 +8,10 @@ current_date() {
     date +%s
 }
 
-for v in "${VARIANTS[@]}"; do
-    echo "[$(current_date)] Running $v"
-    for i in $(seq 1 $ITERATIONS); do
-        echo "[$(current_date)] Iteration $i"
+for i in $(seq 1 $ITERATIONS); do
+    echo "[$(current_date)] Iteration $i"
+    for v in "${VARIANTS[@]}"; do
+        echo "[$(current_date)] Running $v"
         export VARIANT=$v
         sh ./scripts/run-single-benchmark.sh
 
