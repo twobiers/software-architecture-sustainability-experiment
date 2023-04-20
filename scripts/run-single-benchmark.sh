@@ -71,7 +71,7 @@ run_benchmark() {
     k6 run \
         -o experimental-prometheus-rw \
         --summary-export "$RESULTS_DIR/$VARIANT/${START_INSTANT}_k6.json" \
-        -u $RAMP_UP_VUS -s $RAMP_UP_DURATION:$VUS -s $DURATION -s $RAMP_DOWN_DURATION:$RAMP_DOWN_VUS \
+        -u $RAMP_UP_VUS -s $RAMP_UP_DURATION:$VUS -s $DURATION:$VUS -s $RAMP_DOWN_DURATION:$RAMP_DOWN_VUS \
         --quiet \
         $BENCHMARK_SCRIPT
 
