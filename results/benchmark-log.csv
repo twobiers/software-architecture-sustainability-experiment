@@ -1,5 +1,9 @@
 Start,End,VUS,Duration,Variant,Script,Products,Energy
-1681993133,1681993246,200,90s,no-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
-1681993347,1681993460,200,90s,caffeine-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
-1681993565,1681993678,200,90s,redis-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
-1681993780,1681993893,200,90s,caffeine-redis-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
+1682066029,1682066142,200,90s,no-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
+1682066243,1682066355,200,90s,caffeine-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
+1682066456,1682066569,200,90s,redis-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
+1682066672,1682066784,200,90s,caffeine-redis-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
+1682066892,1682067006,200,90s,no-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
+1682067107,1682067220,200,90s,caffeine-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
+1682067321,1682067434,200,90s,redis-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
+1682067536,1682067649,200,90s,caffeine-redis-cache,benchmark/get_iterative_product_from_id_list.js,product_ids_1k.json,1
