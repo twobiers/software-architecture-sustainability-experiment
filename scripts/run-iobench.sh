@@ -25,6 +25,16 @@ log_results() {
     echo "$START_INSTANT,$END_INSTANT,$1,$2" >>$RESULTS_DIR/iobench-log.csv
 }
 
+merge_results() {
+    echo "Merging results..."
+    echo "$TERSE_HEADER" >"$RESULTS_DIR/iobench.csv"
+    for i in $(seq $START_IOPS $IOPS_STEP $END_IOPS); do
+        for j in $(seq 1 $ITERATIONS); do
+            cat "$RESULTS_DIR/fio-$i-$j.csv" | tail -n +1 >>"$RESULTS_DIR/iobench.csv"
+        done
+    done
+}
+
 prepare_results_directory
 
 for i in $(seq 1 $ITERATIONS); do
@@ -57,3 +67,5 @@ for i in $(seq 1 $ITERATIONS); do
         log_results "$i" "$j"
     done
 done
+
+merge_results
