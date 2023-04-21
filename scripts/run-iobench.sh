@@ -4,7 +4,7 @@ TERSE_HEADER="terse_version_3;fio_version;jobname;groupid;error;read_kb;read_ban
 ITERATIONS=1
 START_IOPS=1000
 END_IOPS=25000
-IOPS_STEP=5000
+IOPS_STEP=1000
 SLEEP_TIME=2s
 RESULTS_DIR=results/iobench
 
@@ -38,8 +38,9 @@ for i in $(seq 1 $ITERATIONS); do
         fio --rw=randread \
             --name=IOPS-read \
             --bs=4k \
+            --size=64m \
             --filename=/tmp/fio-test \
-            --numjobs=4 \
+            --numjobs=5 \
             --ioengine=libaio \
             --iodepth=32 \
             --refill_buffers \
