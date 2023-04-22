@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ITERATIONS=1
+ITERATIONS=30
 VARIANTS=("no-cache" "caffeine-cache" "redis-cache" "caffeine-redis-cache")
 
 current_date() {
