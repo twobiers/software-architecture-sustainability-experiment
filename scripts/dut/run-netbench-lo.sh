@@ -13,7 +13,7 @@ current_date() {
 
 prepare_results_directory() {
     mkdir -p "$RESULTS_DIR"
-    if [ ! -f "$RESULTS_DIR/iobench-log.csv" ]; then
+    if [ ! -f "$RESULTS_DIR/netbench-log.csv" ]; then
         echo "Start,End,Bitrate,Adapter" >"$RESULTS_DIR/netbench-log.csv"
     fi
 }
