@@ -29,14 +29,14 @@ log_results() {
 prepare_results_directory
 
 for i in $(seq 1 $ITERATIONS); do
-    for j in $(seq $START_USAGE $END_USAGE $USAGE_STEP); do
+    for j in $(seq $START_USAGE $USAGE_STEP $END_USAGE); do
         START_INSTANT=$(current_date)
         echo "[$(current_date)] Iteration $i"
         echo "[$(current_date)] Running at $j % of memory usage"
 
         sleep $SLEEP_TIME
 
-        stress-ng --vm-bytes $(($(awk '/MemAvailable/{printf "%d\n", $2 ;}' </proc/meminfo) * j))k --vm-keep -m 1 -t $DURATION
+        stress-ng --vm-bytes $(($(awk -v j=$j '/MemAvailable/{printf "%d\n", $2 *j ;}' </proc/meminfo) ))k --vm-keep -m 1 -t $DURATION
 
         sleep $SLEEP_TIME
 
