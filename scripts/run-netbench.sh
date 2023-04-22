@@ -21,7 +21,7 @@ prepare_results_directory() {
     fi
 }
 
-ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "iperf3 -s &"
+ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "sh -c 'cd /whereever; nohup iperf3 -s > /dev/null 2>&1 &'"
 
 for ((bitrate = START_BITRATE; bitrate <= END_BITRATE; bitrate += STEP_BITRATE)); do
     echo "[$(current_date)] Running iperf3 with $bitrate"
