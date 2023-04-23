@@ -11,7 +11,8 @@ RAMP_UP_DURATION=10s
 RAMP_DOWN_DURATION=10s
 DURATION=90s
 BENCHMARK_SCRIPT="benchmark/get_iterative_product_from_id_list.js"
-VARIANT="${VARIANT:-no-cache}"
+VARIANT="${VARIANT:-no-cache}-ext"
+IMAGE_TAG="${VARIANT:-no-cache}"
 RESULTS_DIR="results"
 SLEEP_TIME=10s
 
@@ -42,13 +43,15 @@ setup_dut() {
     echo "[$(current_date)] Starting Services on DUT"
 
     #Hacky way to get all services except the one we want to exclude
-    excluded_services="XXXXXXXXXXXXXXXXXXXXXXX"
+    #excluded_services="XXXXXXXXXXXXXXXXXXXXXXX"
+
+    excluded_services="mongo"
 
     if [[ ! $VARIANT == *"redis"* ]]; then
-        excluded_services="redis"
+        excluded_services="redis $excluded_services"
     fi
 
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && export VARIANT=${VARIANT} && docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && export VARIANT=${IMAGE_TAG} && docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
 }
 
 cleanup_dut() {
