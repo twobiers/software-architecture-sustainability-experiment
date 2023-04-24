@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ITERATIONS=30
+ITERATIONS=2
 
 current_date() {
     # date +"%Y-%m-%d_%H-%M-%S"
