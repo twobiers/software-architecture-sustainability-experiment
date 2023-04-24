@@ -21,6 +21,8 @@ prepare_results_directory() {
 iperf3 -s &
 IPERF_SERVER_ID=$!
 
+prepare_results_directory
+
 for ((bitrate = START_BITRATE; bitrate <= END_BITRATE; bitrate += STEP_BITRATE)); do
     echo "[$(current_date)] Running iperf3 with $bitrate"
     START_INSTANT=$(current_date)
