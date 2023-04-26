@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DUT_IP="192.168.178.79"
+DUT_IP="192.168.178.81"
 SSH_HOST_DUT="tobi@$DUT_IP"
 SSH_PARAMETER="-o StrictHostKeyChecking=no"
 DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experiment/case-study-caching"
@@ -32,7 +32,7 @@ current_date() {
 
 setup_dut() {
     echo "[$(current_date)] Resetting DUT"
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose stop"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose stop"
     if [[ $SWARM_MODE == true ]]; then
         ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker stack rm experiment"
     fi
@@ -52,7 +52,8 @@ setup_dut() {
     echo "[$(current_date)] Starting Services on DUT"
 
     if [[ $SWARM_MODE == true ]]; then
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && export VARIANT=${VARIANT} && docker stack deploy -c docker-compose.yml $SWARM_STACK_NAME"
+        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose up -d node_exporter"
+        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && export VARIANT=${VARIANT} && docker stack deploy -c docker-compose.yaml $SWARM_STACK_NAME"
         ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker service scale ${SWARM_STACK_NAME}_service=$SWARM_SERVICE_SCALE"
         if [[ ! $VARIANT == *"redis"* ]]; then
             ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker service scale ${SWARM_STACK_NAME}_redis=0"
@@ -64,14 +65,14 @@ setup_dut() {
         if [[ ! $VARIANT == *"redis"* ]]; then
             excluded_services="redis"
         fi
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && export VARIANT=${VARIANT} && docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
+        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && export VARIANT=${VARIANT} && docker compose config --services | grep -v $excluded_services | xargs docker compose up -d"
     fi
 }
 
 cleanup_dut() {
     echo "[$(current_date)] Cleaning up DUT"
 
-    ssh "$SSH_PARAMETER" $SSH_HOST_DUT "cd $DUT_EXPERIMENT_LOCATION && docker-compose stop"
+    ssh "$SSH_PARAMETER" $SSH_HOST_DUT "cd $DUT_EXPERIMENT_LOCATION && docker compose stop"
     if [[ $SWARM_MODE == true ]]; then
         ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker stack rm experiment"
     fi
