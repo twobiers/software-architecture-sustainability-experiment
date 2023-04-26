@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 
 ITERATIONS=30
-SWARM_MODE=${SWARM_MODE:-false}
-SUFFIX=${SUFFIX:-""}
-if [ -n "$SUFFIX" ] && [ ! "$SUFFIX" = "-*" ]; then
-    SUFFIX="-${SUFFIX}"
-fi
 VARIANTS=("no-cache" "caffeine-cache" "redis-cache" "caffeine-redis-cache")
 
 current_date() {
@@ -17,8 +12,7 @@ for i in $(seq 1 $ITERATIONS); do
     echo "[$(current_date)] Iteration $i"
     for v in "${VARIANTS[@]}"; do
         echo "[$(current_date)] Running $v"
-        export VARIANT="$v"
-        export SUFFIX="$SUFFIX"
+        export VARIANT=$v
         sh ./scripts/run-single-benchmark.sh
 
         RESULT=$?

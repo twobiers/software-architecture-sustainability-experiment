@@ -14,13 +14,6 @@ BENCHMARK_SCRIPT="benchmark/get_iterative_product_from_id_list.js"
 VARIANT="${VARIANT:-no-cache}"
 RESULTS_DIR="results"
 SLEEP_TIME=10s
-SWARM_MODE=${SWARM_MODE:-false}
-SWARM_STACK_NAME="experiment"
-SWARM_SERVICE_SCALE=5
-SUFFIX=${SUFFIX:-""}
-if [ -n "$SUFFIX" ] && [ ! "$SUFFIX" = "-*" ]; then
-    SUFFIX="-${SUFFIX}"
-fi
 
 export PRODUCTS_FILE="product_ids_1k.json"
 export SERVICE_HOST="$DUT_IP:8080"
@@ -33,9 +26,6 @@ current_date() {
 setup_dut() {
     echo "[$(current_date)] Resetting DUT"
     ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose stop"
-    if [[ $SWARM_MODE == true ]]; then
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker stack rm experiment"
-    fi
 
     echo "[$(current_date)] Rebooting DUT"
 
@@ -51,30 +41,20 @@ setup_dut() {
 
     echo "[$(current_date)] Starting Services on DUT"
 
-    if [[ $SWARM_MODE == true ]]; then
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && export VARIANT=${VARIANT} && docker stack deploy -c docker-compose.yml $SWARM_STACK_NAME"
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker service scale ${SWARM_STACK_NAME}_service=$SWARM_SERVICE_SCALE"
-        if [[ ! $VARIANT == *"redis"* ]]; then
-            ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker service scale ${SWARM_STACK_NAME}_redis=0"
-        fi
-    else
-        #Hacky way to get all services except the one we want to exclude
-        excluded_services="XXXXXXXXXXXXXXXXXXXXXXX"
+    #Hacky way to get all services except the one we want to exclude
+    excluded_services="XXXXXXXXXXXXXXXXXXXXXXX"
 
-        if [[ ! $VARIANT == *"redis"* ]]; then
-            excluded_services="redis"
-        fi
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && export VARIANT=${VARIANT} && docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
+    if [[ ! $VARIANT == *"redis"* ]]; then
+        excluded_services="redis"
     fi
+
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && export VARIANT=${VARIANT} && docker compose config --services | grep -v $excluded_services | xargs docker-compose up -d"
 }
 
 cleanup_dut() {
     echo "[$(current_date)] Cleaning up DUT"
 
     ssh "$SSH_PARAMETER" $SSH_HOST_DUT "cd $DUT_EXPERIMENT_LOCATION && docker-compose stop"
-    if [[ $SWARM_MODE == true ]]; then
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker stack rm experiment"
-    fi
 }
 
 run_benchmark() {
@@ -90,7 +70,7 @@ run_benchmark() {
 
     k6 run \
         -o experimental-prometheus-rw \
-        --summary-export "$RESULTS_DIR/${VARIANT}${SUFFIX}/${START_INSTANT}_k6.json" \
+        --summary-export "$RESULTS_DIR/$VARIANT/${START_INSTANT}_k6.json" \
         -u $RAMP_UP_VUS -s $RAMP_UP_DURATION:$VUS -s $DURATION:$VUS -s $RAMP_DOWN_DURATION:$RAMP_DOWN_VUS \
         --quiet \
         $BENCHMARK_SCRIPT
@@ -112,7 +92,7 @@ run_benchmark() {
 prepare_results_directory() {
 
     # Prepare the results directory
-    [ ! -d "$RESULTS_DIR/${VARIANT}${SUFFIX}" ] && mkdir -p "$RESULTS_DIR/$VARIANT${SUFFIX}"
+    [ ! -d "$RESULTS_DIR/$VARIANT" ] && mkdir -p "$RESULTS_DIR/$VARIANT"
 
     if [ ! -f "$RESULTS_DIR/benchmark-log.csv" ]; then
         echo "Start,End,VUS,Duration,Variant,Script,Products,Energy" >$RESULTS_DIR/benchmark-log.csv
@@ -121,7 +101,7 @@ prepare_results_directory() {
 }
 
 log_results() {
-    echo "$START_INSTANT,$END_INSTANT,$VUS,$DURATION,${VARIANT}${SUFFIX},$BENCHMARK_SCRIPT,$PRODUCTS_FILE,$ENERGY_USAGE" >>$RESULTS_DIR/benchmark-log.csv
+    echo "$START_INSTANT,$END_INSTANT,$VUS,$DURATION,$VARIANT,$BENCHMARK_SCRIPT,$PRODUCTS_FILE,$ENERGY_USAGE" >>$RESULTS_DIR/benchmark-log.csv
 }
 
 prepare_results_directory
