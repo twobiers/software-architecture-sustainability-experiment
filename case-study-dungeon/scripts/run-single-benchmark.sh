@@ -62,17 +62,21 @@ run_game() {
     sleep $SLEEP_TIME_SERVICE_UP
 
     # End game if exists
+    echo "Ending game if one is running. Note that it is allowed to fail."
     hurl $HURL_ARGS "./case-study-dungeon/local-dev-environment/requests/game_end.hurl" --variable gameId="$(hurl $HURL_ARGS ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
 
     # Shutdown players because why not
+    echo "Starting players."
     docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" stop -v
-    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" rm -v
+    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" rm -v -f
     docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" up -d
 
     # Create a short game
+    echo "Creating game"
     hurl $HURL_ARGS ./case-study-dungeon/local-dev-environment/requests/game_create_short.hurl
 
     # Wait for the players to join (should be instant, but just to be sure)
+    echo "Waiting for players to connect."
     sleep $SLEEP_TIME_GAME_START
 
     START_INSTANT=$(current_date)
@@ -84,13 +88,14 @@ run_game() {
     sleep $GAME_DURATION
 
     # End the game
+    echo "Ending game."
     hurl $HURL_ARGS "./case-study-dungeon/local-dev-environment/requests/game_end.hurl" --variable gameId="$(hurl $HURL_ARGS ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
 
     END_INSTANT=$(current_date)
-    echo "[$END_INSTANT] Benchmark Game"
+    echo "[$END_INSTANT] Benchmark Game ended"
 
     docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" stop -v
-    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" rm -v
+    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" rm -v -f
 }
 
 prepare_results_directory() {
