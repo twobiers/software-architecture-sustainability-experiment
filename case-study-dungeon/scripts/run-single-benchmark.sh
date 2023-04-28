@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-DUT_IP="192.168.178.80"
+DUT_IP="192.168.178.81"
 SSH_HOST_DUT="tobi@$DUT_IP"
 SSH_PARAMETER="-o StrictHostKeyChecking=no"
-DUT_EXPERIMENT_LOCATION="/home/tobi/Repos/th-koeln/software-architecture-sustainability-experiment/case-study-dungeon"
+DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experiment/case-study-dungeon"
 MONOLITH_DOCKERFILE="local-dev-environment/docker-compose.monolith.yaml"
 MICROSERVICES_DOCKERFILE="local-dev-environment/docker-compose.yaml"
 NODE_EXPORTER_COMPOSE_FILE="docker-compose.yaml"
@@ -25,8 +25,8 @@ current_date() {
 
 setup_dut() {
     echo "[$(current_date)] Resetting DUT"
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop"
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE rm -v -f"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE rm -v -f"
 
     echo "[$(current_date)] Rebooting DUT"
 
@@ -42,19 +42,19 @@ setup_dut() {
 
     echo "[$(current_date)] Starting Services on DUT"
 
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $NODE_EXPORTER_COMPOSE_FILE up -d"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $NODE_EXPORTER_COMPOSE_FILE up -d"
     if [ "$VARIANT" = "monolith" ]; then
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE up -d"
+        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE up -d"
     elif [ "$VARIANT" = "microservice" ]; then
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MICROSERVICES_DOCKERFILE up -d"
+        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MICROSERVICES_DOCKERFILE up -d"
     fi
 }
 
 cleanup_dut() {
     echo "[$(current_date)] Cleaning up DUT"
 
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop"
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE rm -v -f"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE rm -v -f"
 }
 
 run_game() {
