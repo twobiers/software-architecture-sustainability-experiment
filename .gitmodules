@@ -1,0 +1,9 @@
+[submodule "case-study-dungeon/local-dev-environment"]
+	path = case-study-dungeon/local-dev-environment
+	url = git@gitlab.com:thund/local-dev-environment.git
+[submodule "case-study-dungeon/dungeon-monolith"]
+	path = case-study-dungeon/dungeon-monolith
+	url = git@gitlab.com:thund/dungeon-monolith.git
+[submodule "case-study-dungeon/player-hackschnitzel"]
+	path = case-study-dungeon/player-hackschnitzel
+	url = git@gitlab.com:thund/player-hackschnitzel.git
