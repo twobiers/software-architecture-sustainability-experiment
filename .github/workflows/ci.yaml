@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 env:
   JAVA_VERSION: 17
@@ -25,7 +25,7 @@ jobs:
     name: Build
 
     runs-on: ubuntu-latest
-    needs: [ validation ]
+    needs: [validation]
 
     steps:
       - name: Check out repo
@@ -36,16 +36,16 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: temurin
-          cache: 'gradle'
+          cache: "gradle"
 
       - name: Gradle Assemble
+        working-directory: case-study-caching
         run: |
           ./gradlew --stacktrace assemble --no-daemon
 
   test:
-
     runs-on: ubuntu-latest
-    needs: [ validation ]
+    needs: [validation]
 
     steps:
       - name: Check out repo
@@ -56,9 +56,10 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: temurin
-          cache: 'gradle'
+          cache: "gradle"
 
       - name: Gradle test
+        working-directory: case-study-caching
         run: |
           ./gradlew --stacktrace test --no-daemon
 
@@ -80,7 +81,7 @@ jobs:
     name: Build Docker Images
 
     runs-on: ubuntu-latest
-    needs: [ assemble, test ]
+    needs: [assemble, test]
 
     permissions:
       contents: read
@@ -97,7 +98,7 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: temurin
-          cache: 'gradle'
+          cache: "gradle"
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -107,4 +108,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Rolling Docker Image
+        working-directory: case-study-caching
         run: ./gradlew jibAll --no-daemon -x test -Djib.serialize=true --stacktrace --console=plain

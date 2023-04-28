@@ -3,7 +3,7 @@
 DUT_IP="192.168.178.79"
 SSH_HOST_DUT="tobi@$DUT_IP"
 SSH_PARAMETER="-o StrictHostKeyChecking=no"
-DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experiment"
+DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experiment/case-study-caching"
 RAMP_UP_VUS=0
 RAMP_DOWN_VUS=0
 VUS=200
