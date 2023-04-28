@@ -67,7 +67,7 @@ run_game() {
 
     # Shutdown players because why not
     echo "Starting players."
-    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" stop -v
+    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" stop
     docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" rm -v -f
     docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" up -d
 
@@ -94,7 +94,7 @@ run_game() {
     END_INSTANT=$(current_date)
     echo "[$END_INSTANT] Benchmark Game ended"
 
-    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" stop -v
+    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" stop
     docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" rm -v -f
 }
 

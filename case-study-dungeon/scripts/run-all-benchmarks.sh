@@ -12,6 +12,7 @@ for i in $(seq 1 $ITERATIONS); do
     echo "[$(current_date)] Iteration $i"
     for v in "${VARIANTS[@]}"; do
         echo "[$(current_date)] Running Dungeon $v"
+        export VARIANT="$v"
         sh ./case-study-dungeon/scripts/run-single-benchmark.sh
 
         RESULT=$?
