@@ -7,8 +7,14 @@ DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experim
 MONOLITH_DOCKERFILE="local-dev-environment/docker-compose.monolith.yaml"
 MICROSERVICES_DOCKERFILE="local-dev-environment/docker-compose.yaml"
 RESULTS_DIR="results/case-study-dungeon"
-SLEEP_TIME=60s
+SLEEP_TIME_SERVICE_UP=60s
+SLEEP_TIME_GAME_START=10s
+GAME_DURATION=20m
+HURL_ARGS="--connect-to localhost:8080:$DUT_IP:8080"
 VARIANT="${VARIANT:-monolith}"
+
+export RABBITMQ_HOST="$DUT_IP"
+export GAME_URL="http://$DUT_IP:8080"
 
 current_date() {
     # date +"%Y-%m-%d_%H-%M-%S"
@@ -51,21 +57,23 @@ run_game() {
     echo "[$START_INSTANT] Starting Game"
 
     # We need to wait a bit for the services to be up and running
-    sleep 60s
+    sleep $SLEEP_TIME_SERVICE_UP
 
     docker compose -f ./case-study-dungeon/local-dev-environment/docker-compose.players.yaml up -d
 
     # Create a short game
-    hurl --connect-to localhost:8080:$DUT_IP:8080 ./case-study-dungeon/local-dev-environment/requests/game_create_short
+    hurl "$HURL_ARGS" ./case-study-dungeon/local-dev-environment/requests/game_create_short.hurl
 
     # Wait for the players to join (should be instant, but just to be sure)
-    sleep 10s
+    sleep $SLEEP_TIME_GAME_START
 
     # Start the game
-    hurl --connect-to localhost:8080:$DUT_IP:8080 "./case-study-dungeon/local-dev-environment/requests/game_start.hurl --variable gameId=$(hurl ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
+    hurl "$HURL_ARGS" "./case-study-dungeon/local-dev-environment/requests/game_start.hurl" --variable gameId="$(hurl "$HURL_ARGS" ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
+
+    sleep $GAME_DURATION
 
     # End the game
-    hurl --connect-to localhost:8080:$DUT_IP:8080 "./case-study-dungeon/local-dev-environment/requests/game_end.hurl --variable gameId=$(hurl ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
+    hurl "$HURL_ARGS" "./case-study-dungeon/local-dev-environment/requests/game_end.hurl" --variable gameId="$(hurl "$HURL_ARGS" ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
 
     END_INSTANT=$(current_date)
     echo "[$END_INSTANT] Benchmark Game"
