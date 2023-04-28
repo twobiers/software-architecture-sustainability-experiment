@@ -3,8 +3,6 @@ version: '3.8'
 services:
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
-    deploy:
-      replicas: 0
     command:
       - '--path.rootfs=/host'
       - '--collector.disable-defaults'
