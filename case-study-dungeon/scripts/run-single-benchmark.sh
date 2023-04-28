@@ -23,7 +23,8 @@ current_date() {
 
 setup_dut() {
     echo "[$(current_date)] Resetting DUT"
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop -v"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE rm -v"
 
     echo "[$(current_date)] Rebooting DUT"
 
@@ -49,23 +50,30 @@ setup_dut() {
 cleanup_dut() {
     echo "[$(current_date)] Cleaning up DUT"
 
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop -v"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker-compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE rm -v"
 }
 
 run_game() {
-    START_INSTANT=$(current_date)
-    echo "[$START_INSTANT] Starting Game"
-
     # We need to wait a bit for the services to be up and running
     sleep $SLEEP_TIME_SERVICE_UP
 
-    docker compose -f ./case-study-dungeon/local-dev-environment/docker-compose.players.yaml up -d
+    # End game if exists
+    hurl "$HURL_ARGS" "./case-study-dungeon/local-dev-environment/requests/game_end.hurl" --variable gameId="$(hurl "$HURL_ARGS" ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
+
+    # Shutdown players because why not
+    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" stop -v
+    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" rm -v
+    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" up -d
 
     # Create a short game
     hurl "$HURL_ARGS" ./case-study-dungeon/local-dev-environment/requests/game_create_short.hurl
 
     # Wait for the players to join (should be instant, but just to be sure)
     sleep $SLEEP_TIME_GAME_START
+
+    START_INSTANT=$(current_date)
+    echo "[$START_INSTANT] Starting Game"
 
     # Start the game
     hurl "$HURL_ARGS" "./case-study-dungeon/local-dev-environment/requests/game_start.hurl" --variable gameId="$(hurl "$HURL_ARGS" ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
@@ -78,7 +86,8 @@ run_game() {
     END_INSTANT=$(current_date)
     echo "[$END_INSTANT] Benchmark Game"
 
-    docker compose -f ./case-study-dungeon/local-dev-environment/docker-compose.players.yaml stop
+    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" stop -v
+    docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" rm -v
 }
 
 prepare_results_directory() {
