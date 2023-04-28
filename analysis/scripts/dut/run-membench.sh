@@ -7,7 +7,7 @@ END_USAGE=1
 USAGE_STEP=0.05
 SLEEP_TIME=2s
 DURATION=60s
-RESULTS_DIR=results/membench
+RESULTS_DIR=results/base/membench
 
 current_date() {
     # date +"%Y-%m-%d_%H-%M-%S"

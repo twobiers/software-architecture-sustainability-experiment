@@ -6,7 +6,7 @@ START_IOPS=1000
 END_IOPS=25000
 IOPS_STEP=1000
 SLEEP_TIME=2s
-RESULTS_DIR=results/iobench
+RESULTS_DIR=results/base/iobench
 
 current_date() {
     # date +"%Y-%m-%d_%H-%M-%S"

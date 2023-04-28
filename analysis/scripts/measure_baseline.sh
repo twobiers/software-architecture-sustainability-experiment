@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-RESULTS_DIR="results"
+RESULTS_DIR="results/base"
 DURATION="5m"
 
 current_date() {

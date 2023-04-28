@@ -8,7 +8,7 @@ CPU_STEP=10
 CPU_STRESSORS=$(grep -c processor /proc/cpuinfo)
 SLEEP_TIME=2s
 DURATION=60s
-RESULTS_DIR=results/cpubench
+RESULTS_DIR=results/base/cpubench
 
 current_date() {
     # date +"%Y-%m-%d_%H-%M-%S"

@@ -4,7 +4,7 @@ GIGABIT=1000000000
 START_BITRATE=$((1 * GIGABIT))
 END_BITRATE=$((30 * GIGABIT))
 STEP_BITRATE=$((1 * GIGABIT))
-RESULTS_DIR="results/netbench"
+RESULTS_DIR="results/base/netbench"
 
 current_date() {
     # date +"%Y-%m-%d_%H-%M-%S"

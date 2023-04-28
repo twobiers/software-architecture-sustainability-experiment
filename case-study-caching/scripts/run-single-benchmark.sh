@@ -12,7 +12,7 @@ RAMP_DOWN_DURATION=10s
 DURATION=90s
 BENCHMARK_SCRIPT="benchmark/get_iterative_product_from_id_list.js"
 VARIANT="${VARIANT:-no-cache}"
-RESULTS_DIR="results"
+RESULTS_DIR="results/case-study-caching"
 SLEEP_TIME=10s
 SWARM_MODE=${SWARM_MODE:-false}
 SWARM_STACK_NAME="experiment"
@@ -42,7 +42,7 @@ setup_dut() {
     ssh "$SSH_PARAMETER" $SSH_HOST_DUT "sudo reboot"
 
     echo "[$(current_date)] Waiting for DUT to come back online"
-    sh ./scripts/waitforssh.sh $SSH_HOST_DUT
+    sh ./case-study-caching/scripts/waitforssh.sh $SSH_HOST_DUT
     RESULT=$?
     if [ ! $RESULT -eq 0 ]; then
         echo "[$(current_date)] DUT did not come back online"

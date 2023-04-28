@@ -8,3 +8,5 @@ This repository contains every code artefact created during the work on the thes
 ## Case Study 2: Merge Microservices into a Monolithic
 
 **Note that this repository just includes the artefacts that has been created indepentenly for the thesis. Code artefacts of the whole project "The Microservice Dungeon" can be found [here](https://gitlab.com/the-microservice-dungeon/)**
+
+Prerequistes: hurl, jq

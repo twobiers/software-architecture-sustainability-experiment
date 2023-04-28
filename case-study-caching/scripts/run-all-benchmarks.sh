@@ -19,7 +19,7 @@ for i in $(seq 1 $ITERATIONS); do
         echo "[$(current_date)] Running $v"
         export VARIANT="$v"
         export SUFFIX="$SUFFIX"
-        sh ./scripts/run-single-benchmark.sh
+        sh ./case-study-caching/scripts/run-single-benchmark.sh
 
         RESULT=$?
         if [ ! $RESULT -eq 0 ]; then
