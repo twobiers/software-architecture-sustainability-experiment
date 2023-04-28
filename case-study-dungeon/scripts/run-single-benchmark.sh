@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-DUT_IP="192.168.178.79"
+DUT_IP="192.168.178.80"
 SSH_HOST_DUT="tobi@$DUT_IP"
 SSH_PARAMETER="-o StrictHostKeyChecking=no"
-DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experiment/case-study-dungeon"
+DUT_EXPERIMENT_LOCATION="/home/tobi/Repos/th-koeln/software-architecture-sustainability-experiment/case-study-dungeon"
 MONOLITH_DOCKERFILE="local-dev-environment/docker-compose.monolith.yaml"
 MICROSERVICES_DOCKERFILE="local-dev-environment/docker-compose.yaml"
 NODE_EXPORTER_COMPOSE_FILE="docker-compose.yaml"
