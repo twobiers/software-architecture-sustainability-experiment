@@ -99,6 +99,7 @@ run_game() {
 }
 
 prepare_results_directory() {
+    [ ! -d "$RESULTS_DIR" ] && mkdir -p "$RESULTS_DIR"
     if [ ! -f "$RESULTS_DIR/benchmark-log.csv" ]; then
         echo "Start,End,Variant" >$RESULTS_DIR/benchmark-log.csv
     fi
