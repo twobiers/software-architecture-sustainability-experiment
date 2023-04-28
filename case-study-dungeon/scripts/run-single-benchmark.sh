@@ -4,10 +4,11 @@ DUT_IP="192.168.178.79"
 SSH_HOST_DUT="tobi@$DUT_IP"
 SSH_PARAMETER="-o StrictHostKeyChecking=no"
 DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experiment/case-study-dungeon"
-MONOLITH_DOCKERFILE="local-dev-environment/docker-compose.monolith.yml"
-MICROSERVICES_DOCKERFILE="local-dev-environment/docker-compose.yml"
+MONOLITH_DOCKERFILE="local-dev-environment/docker-compose.monolith.yaml"
+MICROSERVICES_DOCKERFILE="local-dev-environment/docker-compose.yaml"
 RESULTS_DIR="results/case-study-dungeon"
 SLEEP_TIME=60s
+VARIANT="${VARIANT:-monolith}"
 
 current_date() {
     # date +"%Y-%m-%d_%H-%M-%S"
@@ -55,16 +56,16 @@ run_game() {
     docker compose -f ./case-study-dungeon/local-dev-environment/docker-compose.players.yaml up -d
 
     # Create a short game
-    hurl ./case-study-dungeon/local-dev-environment/requests/game_create_short
+    hurl --connect-to localhost:8080:$DUT_IP:8080 ./case-study-dungeon/local-dev-environment/requests/game_create_short
 
     # Wait for the players to join (should be instant, but just to be sure)
     sleep 10s
 
     # Start the game
-    hurl "./case-study-dungeon/local-dev-environment/requests/game_start.hurl --variable gameId=$(hurl ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
+    hurl --connect-to localhost:8080:$DUT_IP:8080 "./case-study-dungeon/local-dev-environment/requests/game_start.hurl --variable gameId=$(hurl ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
 
     # End the game
-    hurl "./case-study-dungeon/local-dev-environment/requests/game_end.hurl --variable gameId=$(hurl ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
+    hurl --connect-to localhost:8080:$DUT_IP:8080 "./case-study-dungeon/local-dev-environment/requests/game_end.hurl --variable gameId=$(hurl ./case-study-dungeon/local-dev-environment/requests/game_get_all.hurl | jq -r '.[0].gameId')"
 
     END_INSTANT=$(current_date)
     echo "[$END_INSTANT] Benchmark Game"
