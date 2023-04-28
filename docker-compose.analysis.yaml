@@ -13,8 +13,8 @@ services:
     ports:
       - 9090:9090
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./scripts/prometheus-init.sh:/bin/prometheus-init.sh
+      - ./analysis/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./analysis/scripts/prometheus-init.sh:/bin/prometheus-init.sh
   # grafana:
   #   image: grafana/grafana-oss:latest
   #   container_name: grafana
@@ -40,4 +40,4 @@ services:
       - 9116:9116
     command: --config.file=/etc/snmp_exporter/snmp.yml
     volumes:
-      - ./snmp.yml:/etc/snmp_exporter/snmp.yml
+      - ./analysis/snmp.yml:/etc/snmp_exporter/snmp.yml
