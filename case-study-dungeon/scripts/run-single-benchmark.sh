@@ -42,7 +42,7 @@ setup_dut() {
 
     echo "[$(current_date)] Starting Services on DUT"
 
-    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $NODE_EXPORTER_COMPOSE_FILE up -d"
+    # ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $NODE_EXPORTER_COMPOSE_FILE up -d"
     if [ "$VARIANT" = "monolith" ]; then
         ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE up -d"
     elif [ "$VARIANT" = "microservice" ]; then

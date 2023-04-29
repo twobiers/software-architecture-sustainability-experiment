@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ITERATIONS=30
+ITERATIONS=1
 VARIANTS=("microservice" "monolith")
 
 current_date() {
