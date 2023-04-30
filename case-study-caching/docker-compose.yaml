@@ -23,7 +23,7 @@ services:
     ports:
       - 8081:8080
     deploy:
-      replicas: 5
+      replicas: 1
     environment:
       - REDIS_HOST=redis
       - MONGO_HOST=mongo
