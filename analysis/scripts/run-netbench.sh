@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DUT_IP="192.168.178.79"
+DUT_IP="192.168.178.81"
 SSH_HOST_DUT="tobi@$DUT_IP"
 SSH_PARAMETER="-o StrictHostKeyChecking=no"
 MEGABIT=1000000
