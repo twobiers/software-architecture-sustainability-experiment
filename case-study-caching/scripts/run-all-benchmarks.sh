@@ -6,7 +6,7 @@ SUFFIX=${SUFFIX:-""}
 if [ -n "$SUFFIX" ] && [ ! "$SUFFIX" = "-*" ]; then
     SUFFIX="-${SUFFIX}"
 fi
-VARIANTS=("no-cache" "caffeine-cache" "redis-cache" "caffeine-redis-cache")
+VARIANTS=("no-cache" "caffeine-cache" "redis-cache")
 
 current_date() {
     # date +"%Y-%m-%d_%H-%M-%S"
