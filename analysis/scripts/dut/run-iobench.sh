@@ -41,7 +41,7 @@ merge_results() {
 
         content=$(cat "$RESULTS_DIR/fio-$iops-$iteration.csv" | tail -n +1)
         echo "$start;$end;$iteration;$iops;$content" >>"$RESULTS_DIR/iobench.csv"
-    done < $RESULTS_DIR/iobench-log.csv
+    done <$RESULTS_DIR/iobench-log.csv
 }
 
 
