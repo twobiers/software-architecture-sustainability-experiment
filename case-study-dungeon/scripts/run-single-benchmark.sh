@@ -55,10 +55,10 @@ cleanup_dut() {
     ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop"
 
     if [ "$VARIANT" = "monolith" ]; then
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && FILE=$MONOLITH_DOCKERFILE ./export-logs.sh"
+        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && FILE=$MONOLITH_DOCKERFILE ./local-dev-environment/export-logs.sh"
     elif [ "$VARIANT" = "microservice" ]; then
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && FILE=$MICROSERVICES_DOCKERFILE ./export-logs.sh"
-    fi 
+        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && FILE=$MICROSERVICES_DOCKERFILE ./local-dev-environment/export-logs.sh"
+    fi
 
     # ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE rm -v -f"
 }
@@ -107,7 +107,7 @@ run_game() {
     docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" config --services | while read -r svc; do docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" logs --no-color --no-log-prefix --since 24h "$svc" >"results/logs/$svc.txt"; done
     KAFKA_TOPICS=$(kaf topics ls --no-headers | awk '{ print $1; }')
     echo "$KAFKA_TOPICS" | grep -v '__.*' | while read -r topic; do kaf consume "$topic" |& tee "results/logs/kaf-$topic.txt"; done
-    
+
     zip -r "logs-$(date +"%Y-%m-%d-%H-%M-%S").zip" results/logs
 
     docker compose -f "./case-study-dungeon/local-dev-environment/docker-compose.players.yaml" rm -v -f
