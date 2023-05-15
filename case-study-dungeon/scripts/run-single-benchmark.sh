@@ -25,7 +25,7 @@ current_date() {
 setup_dut() {
     echo "[$(current_date)] Resetting DUT"
     ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop"
-    # ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE rm -v -f"
+    ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE rm -v -f"
 
     echo "[$(current_date)] Rebooting DUT"
 
