@@ -6,7 +6,6 @@ SSH_PARAMETER="-o StrictHostKeyChecking=no"
 DUT_EXPERIMENT_LOCATION="/home/tobi/software-architecture-sustainability-experiment/case-study-dungeon"
 MONOLITH_DOCKERFILE="local-dev-environment/docker-compose.monolith.yaml"
 MICROSERVICES_DOCKERFILE="local-dev-environment/docker-compose.yaml"
-NODE_EXPORTER_COMPOSE_FILE="docker-compose.yaml"
 RESULTS_DIR="results/case-study-dungeon"
 SLEEP_TIME_SERVICE_UP=60s
 SLEEP_TIME_GAME_START=10s
@@ -56,9 +55,9 @@ cleanup_dut() {
     ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE stop"
 
     if [ "$VARIANT" = "monolith" ]; then
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION/local-dev-environment && FILE=$MONOLITH_DOCKERFILE ./export-logs.sh"
+        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && FILE=$MONOLITH_DOCKERFILE ./export-logs.sh"
     elif [ "$VARIANT" = "microservice" ]; then
-        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION/local-dev-environment && FILE=$MICROSERVICES_DOCKERFILE ./export-logs.sh"
+        ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && FILE=$MICROSERVICES_DOCKERFILE ./export-logs.sh"
     fi
 
     # ssh "$SSH_PARAMETER" "$SSH_HOST_DUT" "cd $DUT_EXPERIMENT_LOCATION && docker compose -f $MONOLITH_DOCKERFILE -f $MICROSERVICES_DOCKERFILE rm -v -f"
