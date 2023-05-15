@@ -185,3 +185,5 @@ ipython_config.py
 
 **/bin/
 node_modules/
+
+logs-*.zip
