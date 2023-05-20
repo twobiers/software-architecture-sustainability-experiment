@@ -44,5 +44,37 @@ merge_results() {
     done <$RESULTS_DIR/iobench-log.csv
 }
 
+repare_results_directory
+
+for i in $(seq 1 $ITERATIONS); do
+    for j in $(seq $START_IOPS $IOPS_STEP $END_IOPS); do
+        START_INSTANT=$(current_date)
+        echo "[$(current_date)] Iteration $i"
+        echo "[$(current_date)] Running at $j IOPS"
+
+        sleep $SLEEP_TIME
+
+        fio --rw=randread \
+            --name=IOPS-read \
+            --bs=4k \
+            --size=64m \
+            --filename=/tmp/fio-test \
+            --numjobs=5 \
+            --ioengine=libaio \
+            --iodepth=32 \
+            --refill_buffers \
+            --group_reporting \
+            --runtime=60 \
+            --time_based \
+            --output-format=terse \
+            "--rate_iops=$j" \
+            "--output=$RESULTS_DIR/fio-$j-$i.csv"
+
+        sleep $SLEEP_TIME
+
+        END_INSTANT=$(current_date)
+        log_results "$i" "$j"
+    done
+done
 
 merge_results
