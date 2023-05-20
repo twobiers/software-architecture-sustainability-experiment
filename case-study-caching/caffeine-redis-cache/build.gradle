@@ -1,5 +1,0 @@
-dependencies {
-    implementation project(path: ':core')
-    implementation 'com.github.ben-manes.caffeine:caffeine'
-    implementation "redis.clients:jedis"
-}
